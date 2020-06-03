@@ -1,33 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateLike, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [updateBlog, setUpdatedBlog] = useState(blog);
-
-  const handleBlogUpdate = (update) => {
-    setUpdatedBlog(update);
-  };
 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
-  };
-
-  const updateLike = () => {
-    const newBlog = { ...updateBlog };
-    newBlog.likes += 1;
-    blogService.update(newBlog.id, newBlog);
-    handleBlogUpdate(newBlog);
-  };
-
-  const deleteBlog = () => {
-    const message = `Remove Blog ${updateBlog.title} by ${updateBlog.author}`;
-    // eslint-disable-next-line no-alert
-    if (window.confirm(message)) {
-      blogService.removeBlog(updateBlog.id);
-      window.location.reload();
-    }
   };
 
   const blogStyle = {
@@ -39,26 +17,27 @@ const Blog = ({ blog }) => {
   };
 
   const blogDetails = () => (
-    <div>
-      <p>{updateBlog.url}</p>
-      <p>
-        likes
-        {' '}
-        {updateBlog.likes}
-        {' '}
-        <button type="button" onClick={updateLike}>like</button>
-      </p>
-      <p>{updateBlog.user.name}</p>
+    <div className='blog-details'>
+      <ul>
+        <li>URL:{' '}{blog.url}</li>
+        <li>
+          Likes:{' '}{blog.likes}{' '}
+          <button type="button" onClick={updateLike}>like</button>
+        </li>
+        <li>Name: {' '}{blog.user.name}</li>
+      </ul>
       <button type="button" onClick={deleteBlog}>remove</button>
     </div>
   );
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div>
-        {updateBlog.title}
+        {blog.title}
         {' '}
-        {updateBlog.author}
+        by
+        {' '}
+        {blog.author}
         {' '}
         <button type="button" onClick={toggleDetails}>{(showDetails) ? 'hide' : 'view'}</button>
         {showDetails && blogDetails()}
